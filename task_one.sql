@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS styles_artists (
 CREATE TABLE IF NOT EXISTS albums (
   id SERIAL PRIMARY KEY,
   title VARCHAR(80) NOT NULL,
-  year_release date NOT NULL
+  year_release date NOT NULL CHECK (year_release >= '1980-01-01')
 );
 
 CREATE TABLE IF NOT EXISTS artist_album (
@@ -29,12 +29,18 @@ CREATE TABLE IF NOT EXISTS songs (
   id SERIAL PRIMARY KEY,
   album_id INTEGER NOT NULL REFERENCES albums(id),
   title VARCHAR(80) NOT NULL,
-  duration INTERVAL NOT NULL
+  duration INTEGER NOT NULL CHECK (duration > 30)
 );
 
 CREATE TABLE IF NOT EXISTS collection (
 	id SERIAL PRIMARY KEY,
 	song_id INTEGER NOT NULL REFERENCES songs(id),
 	title VARCHAR(80) NOT NULL,
-	year_release date NOT NULL
+	year_release date NOT NULL CHECK (year_release >= '2000-01-01')
+);
+
+CREATE TABLE IF NOT EXISTS songs_collection (
+	song_id INTEGER REFERENCES songs(id),
+	collection_id INTEGER REFERENCES collection(id),
+	CONSTRAINT pk PRIMARY KEY (song_id, collection_id)
 );
